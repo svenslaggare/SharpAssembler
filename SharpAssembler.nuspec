@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>SharpAssembler</id>
+        <version>0.0.1</version>
+        <title>SharpAssembler</title>
+        <authors>Anton Jansson</authors>
+        <owners>Anton Jansson</owners>
+        <licenseUrl>https://raw.githubusercontent.com/svenslaggare/SharpAssembler/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/svenslaggare/SharpAssembler</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>x64 assembler for .NET</description>
+        <tags>x64, assembler</tags>
+        <dependencies>
+            <group targetFramework=".NETFramework4.6.1" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="src\bin\x64\Debug\SharpAssembler.dll" target="SharpAssembler.dll" />
+        <file src="src\bin\x64\Debug\SharpAssembler.XML" target="SharpAssembler.XML" />
+    </files>
+</package>
