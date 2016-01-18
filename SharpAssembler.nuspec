@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>SharpAssembler</id>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
         <title>SharpAssembler</title>
         <authors>Anton Jansson</authors>
         <owners>Anton Jansson</owners>
@@ -16,7 +16,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="src\bin\x64\Debug\SharpAssembler.dll" target="SharpAssembler.dll" />
-        <file src="src\bin\x64\Debug\SharpAssembler.XML" target="SharpAssembler.XML" />
+        <file src="src\bin\x64\Debug\SharpAssembler.dll" target="lib\SharpAssembler.dll" />
+        <file src="src\bin\x64\Debug\SharpAssembler.XML" target="lib\SharpAssembler.XML" />
     </files>
 </package>
