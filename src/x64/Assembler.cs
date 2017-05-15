@@ -86,8 +86,19 @@ namespace SharpAssembler.x64
     /// <summary>
     /// Represents an assembler
     /// </summary>
-    public static class Assembler
+    public class Assembler
     {
+        private readonly IList<byte> generatedCode;
+
+        /// <summary>
+        /// Creates a new assembler
+        /// </summary>
+        /// <param name="generatedCode">The assembler</param>
+        public Assembler(IList<byte> generatedCode)
+        {
+            this.generatedCode = generatedCode;
+        }
+
         /// <summary>
         /// The size of a register
         /// </summary>
@@ -297,10 +308,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Adds the second register to the first
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Add(IList<byte> generatedCode, IntRegister destination, IntRegister source)
+        public void Add(IntRegister destination, IntRegister source)
         {
             GenerateTwoRegistersInstruction(
                 generatedCode,
@@ -315,10 +325,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Adds the given int to the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="value">The value</param>
-        public static void Add(IList<byte> generatedCode, IntRegister destination, int value)
+        public void Add(IntRegister destination, int value)
         {
             GenerateOneRegisterWithValueInstruction(
                 generatedCode,
@@ -331,10 +340,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Adds the memory operand to the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source memory</param>
-        public static void Add(IList<byte> generatedCode, IntRegister destination, MemoryOperand source)
+        public void Add(IntRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
@@ -349,10 +357,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Adds register to the memory operand
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination memory</param>
         /// <param name="source">The source register</param>
-        public static void Add(IList<byte> generatedCode, MemoryOperand destination, IntRegister source)
+        public void Add(MemoryOperand destination, IntRegister source)
         {
             GenerateDestinationMemoryInstruction(
                 generatedCode,
@@ -367,10 +374,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Adds the second register to the first
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Add(IList<byte> generatedCode, FloatRegister destination, FloatRegister source)
+        public void Add(FloatRegister destination, FloatRegister source)
         {
             RawAssembler.AddRegisterToRegister(generatedCode, destination, source);
         }
@@ -378,10 +384,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Adds the memory operand to the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source memory</param>
-        public static void Add(IList<byte> generatedCode, FloatRegister destination, MemoryOperand source)
+        public void Add(FloatRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
@@ -394,10 +399,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Subtracts the second register to the first
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Sub(IList<byte> generatedCode, IntRegister destination, IntRegister source)
+        public void Sub(IntRegister destination, IntRegister source)
         {
             GenerateTwoRegistersInstruction(
                 generatedCode,
@@ -412,10 +416,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Subtracts the memory operand from the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source memory</param>
-        public static void Sub(IList<byte> generatedCode, IntRegister destination, MemoryOperand source)
+        public void Sub(IntRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
@@ -430,10 +433,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Subtrats register from the memory operand
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination memory</param>
         /// <param name="source">The source register</param>
-        public static void Sub(IList<byte> generatedCode, MemoryOperand destination, IntRegister source)
+        public void Sub(MemoryOperand destination, IntRegister source)
         {
             GenerateDestinationMemoryInstruction(
                 generatedCode,
@@ -448,10 +450,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Subtracts the given value from the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="value">The value to subtract</param>
-        public static void Sub(IList<byte> generatedCode, IntRegister destination, int value)
+        public void Sub(IntRegister destination, int value)
         {
             GenerateOneRegisterWithValueInstruction(
                 generatedCode,
@@ -464,10 +465,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Subtracts the second register to the first
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Sub(IList<byte> generatedCode, FloatRegister destination, FloatRegister source)
+        public void Sub(FloatRegister destination, FloatRegister source)
         {
             RawAssembler.SubRegisterFromRegister(generatedCode, destination, source);
         }
@@ -475,10 +475,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Subtracts the memory operand from the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source memory</param>
-        public static void Sub(IList<byte> generatedCode, FloatRegister destination, MemoryOperand source)
+        public void Sub(FloatRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
@@ -491,134 +490,127 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Multiplies the second register by the first
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Mult(IList<byte> generatedCode, IntRegister destination, IntRegister source)
+        public void Multiply(IntRegister destination, IntRegister source)
         {
             GenerateTwoRegistersInstruction(
                 generatedCode,
                 destination,
                 source,
-                (gen, x, y) => RawAssembler.MultRegisterByRegister(gen, x, y),
-                RawAssembler.MultRegisterByRegister,
-                RawAssembler.MultRegisterByRegister,
-                RawAssembler.MultRegisterByRegister);
+                (gen, x, y) => RawAssembler.MultiplyRegisterByRegister(gen, x, y),
+                RawAssembler.MultiplyRegisterByRegister,
+                RawAssembler.MultiplyRegisterByRegister,
+                RawAssembler.MultiplyRegisterByRegister);
         }
 
         /// <summary>
         /// Multiplies the memory operand by the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source memory</param>
-        public static void Mult(IList<byte> generatedCode, IntRegister destination, MemoryOperand source)
+        public void Multiply(IntRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
                 destination,
                 source,
-                RawAssembler.MultMemoryRegisterWithOffsetByRegister,
-                RawAssembler.MultMemoryRegisterWithOffsetByRegister,
-                RawAssembler.MultMemoryRegisterWithOffsetByRegister,
-                RawAssembler.MultMemoryRegisterWithOffsetByRegister);
+                RawAssembler.MultiplyMemoryRegisterWithOffsetByRegister,
+                RawAssembler.MultiplyMemoryRegisterWithOffsetByRegister,
+                RawAssembler.MultiplyMemoryRegisterWithOffsetByRegister,
+                RawAssembler.MultiplyMemoryRegisterWithOffsetByRegister);
         }
 
         /// <summary>
         /// Multiplies the second register by the first
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Mult(IList<byte> generatedCode, FloatRegister destination, FloatRegister source)
+        public void Multiply(FloatRegister destination, FloatRegister source)
         {
-            RawAssembler.MultRegisterByRegister(generatedCode, destination, source);
+            RawAssembler.MultiplyRegisterByRegister(generatedCode, destination, source);
         }
 
         /// <summary>
         /// Multiplies the memory operand by the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source memory</param>
-        public static void Mult(IList<byte> generatedCode, FloatRegister destination, MemoryOperand source)
+        public void Multiply(FloatRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
                 destination,
                 source,
-                RawAssembler.MultMemoryRegisterWithIntOffsetByRegister,
-                RawAssembler.MultMemoryRegisterWithIntOffsetByRegister);
+                RawAssembler.MultiplyMemoryRegisterWithIntOffsetByRegister,
+                RawAssembler.MultiplyMemoryRegisterWithIntOffsetByRegister);
         }
 
         /// <summary>
-        /// Divides the rax register with the given register. This instruction also modifies the rdx register.
+        /// Divides the rax register with the given register.
+        /// This instruction also modifies the rdx register.
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="source">The source register</param>
-        public static void Div(IList<byte> generatedCode, IntRegister source)
+        public void Divide(IntRegister source)
         {
             if (source.IsBase)
             {
-                RawAssembler.DivRegisterFromRegister(generatedCode, Register.AX, source.BaseRegister);
+                RawAssembler.DivideRegisterFromRegister(generatedCode, Register.AX, source.BaseRegister);
             }
             else
             {
-                RawAssembler.DivRegisterFromRegister(generatedCode, Register.AX, source.ExtendedRegister);
+                RawAssembler.DivideRegisterFromRegister(generatedCode, Register.AX, source.ExtendedRegister);
             }
         }
 
         /// <summary>
-        /// Divides the rax register with the given memory operand. This instruction also modifies the rdx register.
+        /// Divides the rax register with the given memory operand.
+        /// This instruction also modifies the rdx register.
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="source">The source operand</param>
-        public static void Div(IList<byte> generatedCode, MemoryOperand source)
+        public void Divide(MemoryOperand source)
         {
             if (source.Register.IsBase)
             {
-                RawAssembler.DivMemoryRegisterWithOffsetFromRegister(generatedCode, Register.AX, source.Register.BaseRegister, source.Offset);
+                RawAssembler.DivideMemoryRegisterWithOffsetFromRegister(generatedCode, Register.AX, source.Register.BaseRegister, source.Offset);
             }
             else
             {
-                RawAssembler.DivMemoryRegisterWithOffsetFromRegister(generatedCode, Register.AX, source.Register.ExtendedRegister, source.Offset);
+                RawAssembler.DivideMemoryRegisterWithOffsetFromRegister(generatedCode, Register.AX, source.Register.ExtendedRegister, source.Offset);
             }
         }
 
         /// <summary>
         /// Divides the second register by the first
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Div(IList<byte> generatedCode, FloatRegister destination, FloatRegister source)
+        public void Divide(FloatRegister destination, FloatRegister source)
         {
-            RawAssembler.DivRegisterFromRegister(generatedCode, destination, source);
+            RawAssembler.DivideRegisterFromRegister(generatedCode, destination, source);
         }
 
         /// <summary>
         /// Divides the memory operand by the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source memory</param>
-        public static void Div(IList<byte> generatedCode, FloatRegister destination, MemoryOperand source)
+        public void Divide(FloatRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
                 destination,
                 source,
-                RawAssembler.DivMemoryRegisterWithIntOffsetFromRegister,
-                RawAssembler.DivMemoryRegisterWithIntOffsetFromRegister);
+                RawAssembler.DivideMemoryRegisterWithIntOffsetFromRegister,
+                RawAssembler.DivideMemoryRegisterWithIntOffsetFromRegister);
         }
 
         /// <summary>
         /// Moves the second register to the first register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Move(IList<byte> generatedCode, IntRegister destination, IntRegister source)
+        public void Move(IntRegister destination, IntRegister source)
         {
             GenerateTwoRegistersInstruction(
                 generatedCode,
@@ -633,10 +625,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the memory operand to the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source memory</param>
-        public static void Move(IList<byte> generatedCode, IntRegister destination, MemoryOperand source)
+        public void Move(IntRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
@@ -651,10 +642,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the register to the memory operand
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination memory</param>
         /// <param name="source">The source</param>
-        public static void Move(IList<byte> generatedCode, MemoryOperand destination, IntRegister source)
+        public void Move(MemoryOperand destination, IntRegister source)
         {
             GenerateDestinationMemoryInstruction(
                 generatedCode,
@@ -669,10 +659,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the given int (32-bit) value to the given register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="value">The value</param>
-        public static void Move(IList<byte> generatedCode, IntRegister destination, int value)
+        public void Move(IntRegister destination, int value)
         {
             GenerateOneRegisterWithValueInstruction(
                 generatedCode,
@@ -685,10 +674,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the given long (64-bit) value to the given register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="value">The value</param>
-        public static void Move(IList<byte> generatedCode, IntRegister destination, long value)
+        public void Move(IntRegister destination, long value)
         {
             GenerateOneRegisterWithValueInstruction(
                 generatedCode,
@@ -701,10 +689,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the given int value to the given memory
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination memory</param>
         /// <param name="value">The value</param>
-        public static void Move(IList<byte> generatedCode, MemoryOperand destination, int value)
+        public void Move(MemoryOperand destination, int value)
         {
             GenerateOneMemoryOperandWithValueInstruction(
                 generatedCode,
@@ -717,10 +704,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the second register to the first register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Move(IList<byte> generatedCode, FloatRegister destination, FloatRegister source)
+        public void Move(FloatRegister destination, FloatRegister source)
         {
             RawAssembler.MoveRegisterToRegister(generatedCode, destination, source);
         }
@@ -728,10 +714,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the memory operand to the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source memory</param>
-        public static void Move(IList<byte> generatedCode, FloatRegister destination, MemoryOperand source)
+        public void Move(FloatRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
@@ -744,10 +729,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the register to the memory operand
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination memory</param>
         /// <param name="source">The source</param>
-        public static void Move(IList<byte> generatedCode, MemoryOperand destination, FloatRegister source)
+        public void Move(MemoryOperand destination, FloatRegister source)
         {
             GenerateDestinationMemoryInstruction(
                 generatedCode,
@@ -760,18 +744,17 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the memory operand to the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source memory</param>
-        public static void Move(IList<byte> generatedCode, HardwareRegister destination, MemoryOperand source)
+        public void Move(HardwareRegister destination, MemoryOperand source)
         {
             switch (destination.Type)
             {
                 case HardwareRegisterType.Int:
-                    Move(generatedCode, destination.IntRegister, source);
+                    Move(destination.IntRegister, source);
                     break;
                 case HardwareRegisterType.Float:
-                    Move(generatedCode, destination.FloatRegister, source);
+                    Move(destination.FloatRegister, source);
                     break;
             }
         }
@@ -779,18 +762,17 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Moves the register to the memory operand
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination memory</param>
         /// <param name="source">The source</param>
-        public static void Move(IList<byte> generatedCode, MemoryOperand destination, HardwareRegister source)
+        public void Move(MemoryOperand destination, HardwareRegister source)
         {
             switch (source.Type)
             {
                 case HardwareRegisterType.Int:
-                    Move(generatedCode, destination, source.IntRegister);
+                    Move(destination, source.IntRegister);
                     break;
                 case HardwareRegisterType.Float:
-                    Move(generatedCode, destination, source.FloatRegister);
+                    Move(destination, source.FloatRegister);
                     break;
             }
         }
@@ -798,10 +780,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Compares the second register to the first register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Compare(IList<byte> generatedCode, IntRegister destination, IntRegister source)
+        public void Compare(IntRegister destination, IntRegister source)
         {
             GenerateTwoRegistersInstruction(
                 generatedCode,
@@ -816,10 +797,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Compares the memory operand to the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source memory</param>
-        public static void Compare(IList<byte> generatedCode, IntRegister destination, MemoryOperand source)
+        public void Compare(IntRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
@@ -834,10 +814,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Compares the register to the memory operand
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination memory</param>
         /// <param name="source">The source</param>
-        public static void Compare(IList<byte> generatedCode, MemoryOperand destination, IntRegister source)
+        public void Compare(MemoryOperand destination, IntRegister source)
         {
             GenerateDestinationMemoryInstruction(
                 generatedCode,
@@ -852,10 +831,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Compares the second register to the first register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Compare(IList<byte> generatedCode, FloatRegister destination, FloatRegister source)
+        public void Compare(FloatRegister destination, FloatRegister source)
         {
             RawAssembler.CompareRegisterToRegister(generatedCode, destination, source);
         }
@@ -863,10 +841,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Compares the memory operand to the register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source memory</param>
-        public static void Compare(IList<byte> generatedCode, FloatRegister destination, MemoryOperand source)
+        public void Compare(FloatRegister destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
                 generatedCode,
@@ -879,10 +856,9 @@ namespace SharpAssembler.x64
         /// <summary>
         /// XOR's the second register to the first
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>
-        public static void Xor(IList<byte> generatedCode, IntRegister destination, IntRegister source)
+        public void Xor(IntRegister destination, IntRegister source)
         {
             GenerateTwoRegistersInstruction(
                 generatedCode,
@@ -897,17 +873,16 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Pushes the given register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="register">The register</param>
-        public static void Push(IList<byte> generatedCode, HardwareRegister register)
+        public void Push(HardwareRegister register)
         {
             switch (register.Type)
             {
                 case HardwareRegisterType.Int:
-                    Push(generatedCode, register.IntRegister);
+                    Push(register.IntRegister);
                     break;
                 case HardwareRegisterType.Float:
-                    Push(generatedCode, register.FloatRegister);
+                    Push(register.FloatRegister);
                     break;
             }
         }
@@ -915,9 +890,8 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Pushes the given register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="register">The register</param>
-        public static void Push(IList<byte> generatedCode, IntRegister register)
+        public void Push(IntRegister register)
         {
             GenerateOneRegisterInstruction(
                 generatedCode,
@@ -929,9 +903,8 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Pushes the given register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="register">The register</param>
-        public static void Push(IList<byte> generatedCode, FloatRegister register)
+        public void Push(FloatRegister register)
         {
             RawAssembler.PushRegister(generatedCode, register);
         }
@@ -939,9 +912,8 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Pushes the given integer
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="value">The value to push</param>
-        public static void Push(IList<byte> generatedCode, int value)
+        public void Push(int value)
         {
             RawAssembler.PushInt(generatedCode, value);
         }
@@ -949,17 +921,16 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Pops the given register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="register">The register</param>
-        public static void Pop(IList<byte> generatedCode, HardwareRegister register)
+        public void Pop(HardwareRegister register)
         {
             switch (register.Type)
             {
                 case HardwareRegisterType.Int:
-                    Pop(generatedCode, register.IntRegister);
+                    Pop(register.IntRegister);
                     break;
                 case HardwareRegisterType.Float:
-                    Pop(generatedCode, register.FloatRegister);
+                    Pop(register.FloatRegister);
                     break;
             }
         }
@@ -967,9 +938,8 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Pops the given register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="register">The register</param>
-        public static void Pop(IList<byte> generatedCode, IntRegister register)
+        public void Pop(IntRegister register)
         {
             GenerateOneRegisterInstruction(
                 generatedCode,
@@ -981,9 +951,8 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Pops the given register
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="register">The register</param>
-        public static void Pop(IList<byte> generatedCode, FloatRegister register)
+        public void Pop(FloatRegister register)
         {
             RawAssembler.PopRegister(generatedCode, register);
         }
@@ -991,8 +960,7 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Pops the top operand
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
-        public static void Pop(IList<byte> generatedCode)
+        public void Pop()
         {
             RawAssembler.AddByteToReg(generatedCode, Register.SP, RawAssembler.RegisterSize);
         }
@@ -1000,11 +968,10 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Jumps to the given target
         /// </summary>
-        /// <param name="generatedCode">The generated code</param>
         /// <param name="condition">The jump condition</param>
         /// <param name="target">The target relative to the end of the generated instruction.</param>
         /// <param name="unsignedComparison">Indicates if to use an unsigned comparison</param>
-        public static void Jump(IList<byte> generatedCode, JumpCondition condition, int target, bool unsignedComparison = false)
+        public void Jump(JumpCondition condition, int target, bool unsignedComparison = false)
         {
             switch (condition)
             {
@@ -1063,37 +1030,34 @@ namespace SharpAssembler.x64
         /// <summary>
         /// Calls the given function where the entry points is in a register
         /// </summary>
-        /// <param name="codeGenerator">The code generator</param>
         /// <param name="addressRegister">The register where the address is</param>
-        public static void CallInRegister(IList<byte> codeGenerator, IntRegister addressRegister)
+        public void CallInRegister(IntRegister addressRegister)
         {
             if (addressRegister.IsBase)
             {
-                RawAssembler.CallInRegister(codeGenerator, addressRegister.BaseRegister);
+                RawAssembler.CallInRegister(generatedCode, addressRegister.BaseRegister);
             }
             else
             {
-                RawAssembler.CallInRegister(codeGenerator, addressRegister.ExtendedRegister);
+                RawAssembler.CallInRegister(generatedCode, addressRegister.ExtendedRegister);
             }
         }
 
         /// <summary>
         /// Calls the given function
         /// </summary>
-        /// <param name="codeGenerator">The code generator</param>
         /// <param name="relativeAddress">The relative address</param>
-        public static void Call(IList<byte> codeGenerator, int relativeAddress)
+        public void Call(int relativeAddress)
         {
-            RawAssembler.Call(codeGenerator, relativeAddress);
+            RawAssembler.Call(generatedCode, relativeAddress);
         }
 
         /// <summary>
         /// Makes a return from the current function
         /// </summary>
-        /// <param name="codeGenerator">The code generator</param>
-        public static void Return(IList<byte> codeGenerator)
+        public void Return()
         {
-            RawAssembler.Return(codeGenerator);
+            RawAssembler.Return(generatedCode);
         }
     }
 }

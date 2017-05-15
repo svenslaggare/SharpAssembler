@@ -1819,7 +1819,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source register</param>
         /// <param name="is32bits">Indicates if a 32-bits register</param>
-        public static void MultRegisterByRegister(IList<byte> codeGenerator, Register destination, Register source, bool is32bits = false)
+        public static void MultiplyRegisterByRegister(IList<byte> codeGenerator, Register destination, Register source, bool is32bits = false)
         {
             if (!is32bits)
             {
@@ -1837,7 +1837,7 @@ namespace SharpAssembler.x64
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source register</param>
-        public static void MultRegisterByRegister(IList<byte> codeGenerator, ExtendedRegister destination, ExtendedRegister source)
+        public static void MultiplyRegisterByRegister(IList<byte> codeGenerator, ExtendedRegister destination, ExtendedRegister source)
         {
             codeGenerator.Add(0x4d);
             codeGenerator.Add(0x0f);
@@ -1851,7 +1851,7 @@ namespace SharpAssembler.x64
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source register</param>
-        public static void MultRegisterByRegister(IList<byte> codeGenerator, ExtendedRegister destination, Register source)
+        public static void MultiplyRegisterByRegister(IList<byte> codeGenerator, ExtendedRegister destination, Register source)
         {
             codeGenerator.Add(0x4c);
             codeGenerator.Add(0x0f);
@@ -1865,7 +1865,7 @@ namespace SharpAssembler.x64
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source register</param>
-        public static void MultRegisterByRegister(IList<byte> codeGenerator, Register destination, ExtendedRegister source)
+        public static void MultiplyRegisterByRegister(IList<byte> codeGenerator, Register destination, ExtendedRegister source)
         {
             codeGenerator.Add(0x49);
             codeGenerator.Add(0x0f);
@@ -1880,7 +1880,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination memory register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void MultMemoryRegisterWithOffsetByRegister(
+        public static void MultiplyMemoryRegisterWithOffsetByRegister(
             IList<byte> codeGenerator,
             Register destination,
             Register sourceMemoryRegister,
@@ -1909,7 +1909,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination memory register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void MultMemoryRegisterWithOffsetByRegister(
+        public static void MultiplyMemoryRegisterWithOffsetByRegister(
             IList<byte> codeGenerator,
             ExtendedRegister destination,
             Register sourceMemoryRegister,
@@ -1938,7 +1938,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination memory register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void MultMemoryRegisterWithOffsetByRegister(
+        public static void MultiplyMemoryRegisterWithOffsetByRegister(
             IList<byte> codeGenerator,
             ExtendedRegister destination,
             ExtendedRegister sourceMemoryRegister,
@@ -1962,7 +1962,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination memory register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void MultMemoryRegisterWithOffsetByRegister(
+        public static void MultiplyMemoryRegisterWithOffsetByRegister(
             IList<byte> codeGenerator,
             Register destination,
             ExtendedRegister sourceMemoryRegister,
@@ -1985,7 +1985,7 @@ namespace SharpAssembler.x64
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source register</param>
-        public static void MultRegisterByRegister(IList<byte> codeGenerator, FloatRegister destination, FloatRegister source)
+        public static void MultiplyRegisterByRegister(IList<byte> codeGenerator, FloatRegister destination, FloatRegister source)
         {
             codeGenerator.Add(0xf3);
             codeGenerator.Add(0x0f);
@@ -2000,7 +2000,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination memory register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void MultMemoryRegisterWithIntOffsetByRegister(
+        public static void MultiplyMemoryRegisterWithIntOffsetByRegister(
             IList<byte> codeGenerator,
             FloatRegister destination,
             Register sourceMemoryRegister, int offset)
@@ -2034,7 +2034,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination memory register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void MultMemoryRegisterWithIntOffsetByRegister(
+        public static void MultiplyMemoryRegisterWithIntOffsetByRegister(
             IList<byte> codeGenerator,
             FloatRegister destination,
             ExtendedRegister sourceMemoryRegister, int offset)
@@ -2058,7 +2058,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source register</param>
         /// <param name="is32bits">Indicates if a 32-bits register</param>
-        public static void DivRegisterFromRegister(IList<byte> codeGenerator, Register destination, Register source, bool is32bits = false)
+        public static void DivideRegisterFromRegister(IList<byte> codeGenerator, Register destination, Register source, bool is32bits = false)
         {
             if (destination != Register.AX)
             {
@@ -2080,7 +2080,7 @@ namespace SharpAssembler.x64
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source register</param>
-        public static void DivRegisterFromRegister(IList<byte> codeGenerator, Register destination, ExtendedRegister source)
+        public static void DivideRegisterFromRegister(IList<byte> codeGenerator, Register destination, ExtendedRegister source)
         {
             if (destination != Register.AX)
             {
@@ -2099,7 +2099,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void DivMemoryRegisterWithOffsetFromRegister(
+        public static void DivideMemoryRegisterWithOffsetFromRegister(
             IList<byte> codeGenerator,
             Register destination,
             Register sourceMemoryRegister,
@@ -2132,7 +2132,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void DivMemoryRegisterWithOffsetFromRegister(
+        public static void DivideMemoryRegisterWithOffsetFromRegister(
             IList<byte> codeGenerator,
             Register destination,
             ExtendedRegister sourceMemoryRegister, int offset)
@@ -2158,7 +2158,7 @@ namespace SharpAssembler.x64
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="destination">The destination register</param>
         /// <param name="source">The source register</param>
-        public static void DivRegisterFromRegister(IList<byte> codeGenerator, FloatRegister destination, FloatRegister source)
+        public static void DivideRegisterFromRegister(IList<byte> codeGenerator, FloatRegister destination, FloatRegister source)
         {
             codeGenerator.Add(0xf3);
             codeGenerator.Add(0x0f);
@@ -2173,7 +2173,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination memory register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void DivMemoryRegisterWithIntOffsetFromRegister(
+        public static void DivideMemoryRegisterWithIntOffsetFromRegister(
             IList<byte> codeGenerator,
             FloatRegister destination,
             Register sourceMemoryRegister, int offset)
@@ -2207,7 +2207,7 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination memory register</param>
         /// <param name="offset">The memory offset</param>
         /// <param name="sourceMemoryRegister">The source register</param>
-        public static void DivMemoryRegisterWithIntOffsetFromRegister(
+        public static void DivideMemoryRegisterWithIntOffsetFromRegister(
             IList<byte> codeGenerator,
             FloatRegister destination,
             ExtendedRegister sourceMemoryRegister, int offset)
