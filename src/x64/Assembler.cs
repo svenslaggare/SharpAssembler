@@ -84,11 +84,27 @@ namespace SharpAssembler.x64
     }
 
     /// <summary>
+    /// The data sizes for the memory instructions
+    /// </summary>
+    public enum DataSize
+    {
+        Size8,
+		Size16,
+		Size32,
+		Size64,
+	};
+
+    /// <summary>
     /// Represents an assembler
     /// </summary>
     public class Assembler
     {
         private readonly IList<byte> generatedCode;
+
+        /// <summary>
+        /// The default memory data size
+        /// </summary>
+        public const DataSize DefaultMemoryDataSize = DataSize.Size64;
 
         /// <summary>
         /// Creates a new assembler
@@ -209,9 +225,14 @@ namespace SharpAssembler.x64
         /// <param name="inst2">The second instruction</param> 
         /// <param name="inst3">The third instruction</param>
         /// <param name="inst4">The fourth instruction</param> 
-        private static void GenerateSourceMemoryInstruction(IList<byte> generatedCode, IntRegister op1, MemoryOperand op2,
-            Action<IList<byte>, Register, Register, int> inst1, Action<IList<byte>, ExtendedRegister, ExtendedRegister, int> inst2,
-            Action<IList<byte>, Register, ExtendedRegister, int> inst3, Action<IList<byte>, ExtendedRegister, Register, int> inst4)
+        private static void GenerateSourceMemoryInstruction(
+            IList<byte> generatedCode,
+            IntRegister op1,
+            MemoryOperand op2,
+            Action<IList<byte>, Register, Register, int> inst1,
+            Action<IList<byte>, ExtendedRegister, ExtendedRegister, int> inst2,
+            Action<IList<byte>, Register, ExtendedRegister, int> inst3,
+            Action<IList<byte>, ExtendedRegister, Register, int> inst4)
         {
             if (op1.IsBase && op2.Register.IsBase)
             {
@@ -239,8 +260,13 @@ namespace SharpAssembler.x64
         /// <param name="op2">The second operand</param>
         /// <param name="inst1">The first instruction</param>
         /// <param name = "inst2" > The second instruction</param> 
-        private static void GenerateSourceMemoryInstruction(IList<byte> generatedCode, FloatRegister op1, MemoryOperand op2,
-            Action<IList<byte>, FloatRegister, Register, int> inst1, Action<IList<byte>, FloatRegister, ExtendedRegister, int> inst2)
+        /// <typeparam name="T">Te type of the first operand</typeparam>
+        private static void GenerateSourceMemoryInstruction<T>(
+            IList<byte> generatedCode,
+            T op1,
+            MemoryOperand op2,
+            Action<IList<byte>, T, Register, int> inst1,
+            Action<IList<byte>, T, ExtendedRegister, int> inst2)
         {
             if (op2.Register.IsBase)
             {
@@ -262,9 +288,14 @@ namespace SharpAssembler.x64
         /// <param name="inst2">The second instruction</param>
         /// <param name="inst3">The third instruction</param>
         /// <param name="inst4">The fourth instruction</param>
-        private static void GenerateDestinationMemoryInstruction(IList<byte> generatedCode, MemoryOperand op1, IntRegister op2,
-            Action<IList<byte>, Register, int, Register> inst1, Action<IList<byte>, ExtendedRegister, int, ExtendedRegister> inst2,
-            Action<IList<byte>, Register, int, ExtendedRegister> inst3, Action<IList<byte>, ExtendedRegister, int, Register> inst4)
+        private static void GenerateDestinationMemoryInstruction(
+            IList<byte> generatedCode,
+            MemoryOperand op1,
+            IntRegister op2,
+            Action<IList<byte>, Register, int, Register> inst1,
+            Action<IList<byte>, ExtendedRegister, int, ExtendedRegister> inst2,
+            Action<IList<byte>, Register, int, ExtendedRegister> inst3,
+            Action<IList<byte>, ExtendedRegister, int, Register> inst4)
         {
             if (op1.Register.IsBase && op2.IsBase)
             {
@@ -292,8 +323,13 @@ namespace SharpAssembler.x64
         /// <param name="op2">The second operand</param>
         /// <param name="inst1">The first instruction</param>
         /// <param name="inst2">The second instruction</param>
-        private static void GenerateDestinationMemoryInstruction(IList<byte> generatedCode, MemoryOperand op1, FloatRegister op2,
-            Action<IList<byte>, Register, int, FloatRegister> inst1, Action<IList<byte>, ExtendedRegister, int, FloatRegister> inst2)
+        /// <typeparam name="T">The type of the second operand</typeparam>
+        private static void GenerateDestinationMemoryInstruction<T>(
+            IList<byte> generatedCode,
+            MemoryOperand op1,
+            T op2,
+            Action<IList<byte>, Register, int, T> inst1,
+            Action<IList<byte>, ExtendedRegister, int, T> inst2)
         {
             if (op1.Register.IsBase)
             {
@@ -547,6 +583,21 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
+        /// Multiplies the given register by the given constant
+        /// </summary>
+        /// <param name="destination">The destination</param>
+        /// <param name="value">The constant</param>
+        public void Multiply(IntRegister destination, int value)
+        {
+            GenerateOneRegisterWithValueInstruction<int>(
+                this.generatedCode,
+                destination,
+                value,
+                (IList<byte> codeGen, Register x, int y) => RawAssembler.MultiplyConstantToRegister(codeGen, x, y),
+                RawAssembler.MultiplyConstantToRegister);
+        }
+
+        /// <summary>
         /// Divides the rax register with the given register.
         /// This instruction also modifies the rdx register.
         /// </summary>
@@ -627,14 +678,49 @@ namespace SharpAssembler.x64
         /// </summary>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source memory</param>
-        public void Move(IntRegister destination, MemoryOperand source)
+        /// <param name="dataSize">The size of the data</param>
+        public void Move(IntRegister destination, MemoryOperand source, DataSize dataSize = DataSize.Size64)
+        {
+            switch (dataSize)
+            {
+                case DataSize.Size8:
+                    throw new ArgumentException("Not supported.");
+                case DataSize.Size16:
+                    throw new ArgumentException("Not supported.");
+                case DataSize.Size32:
+                    GenerateSourceMemoryInstruction(
+                        generatedCode,
+                        destination,
+                        source,
+                        (gen, dest, src, offset) => RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister(gen, dest, src, offset, true),
+                        (gen, dest, src, offset) => throw new ArgumentException("Not supported."),
+                        (gen, dest, src, offset) => RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister(gen, dest, src, offset, true),
+                        (gen, dest, src, offset) => throw new ArgumentException("Not supported."));
+                    break;
+                case DataSize.Size64:
+                    GenerateSourceMemoryInstruction(
+                        generatedCode,
+                        destination,
+                        source,
+                        (gen, dest, src, offset) => RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister(gen, dest, src, offset),
+                        RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister,
+                        (gen, dest, src, offset) => RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister(gen, dest, src, offset),
+                        RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Moves the memory operand to the register
+        /// </summary>
+        /// <param name="destination">The destination</param>
+        /// <param name="source">The source memory</param>
+        public void Move(Register8Bits destination, MemoryOperand source)
         {
             GenerateSourceMemoryInstruction(
-                generatedCode,
+                this.generatedCode,
                 destination,
                 source,
-                RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister,
-                RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister,
                 RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister,
                 RawAssembler.MoveMemoryRegisterWithIntOffsetToRegister);
         }
@@ -644,14 +730,49 @@ namespace SharpAssembler.x64
         /// </summary>
         /// <param name="destination">The destination memory</param>
         /// <param name="source">The source</param>
-        public void Move(MemoryOperand destination, IntRegister source)
+        /// <param name="dataSize">The size of the data</param>
+        public void Move(MemoryOperand destination, IntRegister source, DataSize dataSize = DataSize.Size64)
+        {
+            switch (dataSize)
+            {
+                case DataSize.Size8:
+                    throw new ArgumentException("Not supported.");
+                case DataSize.Size16:
+                    throw new ArgumentException("Not supported.");
+                case DataSize.Size32:
+                    GenerateDestinationMemoryInstruction(
+                        generatedCode,
+                        destination,
+                        source,
+                        (gen, dest, offset, src) => RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset(gen, dest, offset, src, true),
+                        (gen, dest, offset, src) => throw new ArgumentException("Not supported."),
+                        (gen, dest, offset, src) => throw new ArgumentException("Not supported."),
+                        (gen, dest, offset, src) => RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset(gen, dest, offset, src, true));
+                    break;
+                case DataSize.Size64:
+                    GenerateDestinationMemoryInstruction(
+                        generatedCode,
+                        destination,
+                        source,
+                        (gen, dest, offset, src) => RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset(gen, dest, offset, src),
+                        RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset,
+                        RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset,
+                         (gen, dest, offset, src) => RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset(gen, dest, offset, src));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Moves the register to the memory operand
+        /// </summary>
+        /// <param name="destination">The destination memory</param>
+        /// <param name="source">The source</param>
+        public void Move(MemoryOperand destination, Register8Bits source)
         {
             GenerateDestinationMemoryInstruction(
-                generatedCode,
+                this.generatedCode,
                 destination,
                 source,
-                (gen, dest, offset, src) => RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset(gen, dest, offset, src),
-                RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset,
                 RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset,
                 RawAssembler.MoveRegisterToMemoryRegisterWithIntOffset);
         }

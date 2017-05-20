@@ -422,13 +422,23 @@ namespace SharpAssembler.x64
         /// <param name="destinationMemoryRegister">The destination memory register</param>
         /// <param name="offset">The offset</param>
         /// <param name="source">The source register</param>
+        /// <param name="is32Bits">Indicates if a 32-bits register</param>
         public static void MoveRegisterToMemoryRegisterWithIntOffset(
             IList<byte> codeGenerator,
             ExtendedRegister destinationMemoryRegister,
             int offset,
-            Register source)
+            Register source,
+            bool is32Bits = false)
         {
-            codeGenerator.Add(0x49);
+            if (!is32Bits)
+            {
+                codeGenerator.Add(0x49);
+            }
+            else
+            {
+                codeGenerator.Add(0x41);
+            }
+
             codeGenerator.Add(0x89);
             codeGenerator.Add((byte)(0x80 | (byte)destinationMemoryRegister | (byte)((byte)source << 3)));
 
@@ -448,7 +458,8 @@ namespace SharpAssembler.x64
         public static void MoveRegisterToMemoryRegisterWithIntOffset(
             IList<byte> codeGenerator,
             ExtendedRegister destinationMemoryRegister,
-            int offset, FloatRegister source)
+            int offset,
+            FloatRegister source)
         {
             codeGenerator.Add(0xf3);
             codeGenerator.Add(0x41);
@@ -463,14 +474,71 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
+        /// Moves the content from a register to memory where the address is in a register + int offset
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destinationMemoryRegister">The destination memory register</param>
+        /// <param name="offset">The offset</param>
+        /// <param name="source">The source register</param>
+        public static void MoveRegisterToMemoryRegisterWithIntOffset(
+            IList<byte> codeGenerator,
+            Register destinationMemoryRegister,
+            int offset,
+            Register8Bits source)
+        {
+            codeGenerator.Add(0x88);
+
+            if (destinationMemoryRegister != Register.SP)
+            {
+                codeGenerator.Add((byte)(0x80 | (byte)destinationMemoryRegister | ((byte)source << 3)));
+            }
+            else
+            {
+                codeGenerator.Add((byte)(0x84 | (byte)destinationMemoryRegister | ((byte)source << 3)));
+                codeGenerator.Add(0x24);
+            }
+
+            foreach (var component in BitConverter.GetBytes(offset))
+            {
+                codeGenerator.Add(component);
+            }
+        }
+
+        /// <summary>
+        /// Moves the content from a register to memory where the address is in a register + int offset
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destinationMemoryRegister">The destination memory register</param>
+        /// <param name="offset">The offset</param>
+        /// <param name="source">The source register</param>
+        public static void MoveRegisterToMemoryRegisterWithIntOffset(
+            IList<byte> codeGenerator,
+            ExtendedRegister destinationMemoryRegister,
+            int offset,
+            Register8Bits source)
+        {
+            codeGenerator.Add(0x41);
+            codeGenerator.Add(0x88);
+            codeGenerator.Add((byte)(0x80 | (byte)destinationMemoryRegister | ((byte)source << 3)));
+
+            foreach (var component in BitConverter.GetBytes(offset))
+            {
+                codeGenerator.Add(component);
+            }
+        }
+
+        /// <summary>
         /// Moves the content from a memory where the address is a register + offset to a register
         /// </summary>
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="destination">The destination register</param>
         /// <param name="sourceMemoryRegister">The source memory register</param>
         /// <param name="offset">The offset</param>
-        public static void MoveMemoryRegisterWithOffsetToRegister(IList<byte> codeGenerator, Register destination,
-            Register sourceMemoryRegister, int offset)
+        public static void MoveMemoryRegisterWithOffsetToRegister(
+            IList<byte> codeGenerator,
+            Register destination,
+            Register sourceMemoryRegister,
+            int offset)
         {
             if (AssemblerHelpers.IsValidByteValue(offset))
             {
@@ -516,20 +584,26 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination register</param>
         /// <param name="sourceMemoryRegister">The source memory register</param>
         /// <param name="offset">The offset</param>
+        /// <param name="is32Bits">The size of the data</param>
         public static void MoveMemoryRegisterWithIntOffsetToRegister(
             IList<byte> codeGenerator,
             Register destination,
-            Register sourceMemoryRegister, int offset)
+            Register sourceMemoryRegister,
+            int offset,
+            bool is32Bits = false)
         {
-            if (sourceMemoryRegister != Register.SP)
+            if (!is32Bits)
             {
                 codeGenerator.Add(0x48);
+            }
+
+            if (sourceMemoryRegister != Register.SP)
+            {
                 codeGenerator.Add(0x8b);
                 codeGenerator.Add((byte)(0x80 | (byte)sourceMemoryRegister | (byte)((byte)destination << 3)));
             }
             else
             {
-                codeGenerator.Add(0x48);
                 codeGenerator.Add(0x8b);
                 codeGenerator.Add((byte)(0x84 | (byte)((byte)destination << 3)));
                 codeGenerator.Add(0x24);
@@ -551,7 +625,8 @@ namespace SharpAssembler.x64
         public static void MoveMemoryRegisterWithIntOffsetToRegister(
             IList<byte> codeGenerator,
             ExtendedRegister destination,
-            Register sourceMemoryRegister, int offset)
+            Register sourceMemoryRegister,
+            int offset)
         {
             if (sourceMemoryRegister != Register.SP)
             {
@@ -583,7 +658,8 @@ namespace SharpAssembler.x64
         public static void MoveMemoryRegisterWithIntOffsetToRegister(
             IList<byte> codeGenerator,
             ExtendedRegister destination,
-            ExtendedRegister sourceMemoryRegister, int offset)
+            ExtendedRegister sourceMemoryRegister,
+            int offset)
         {
             codeGenerator.Add(0x4d);
             codeGenerator.Add(0x8b);
@@ -602,12 +678,23 @@ namespace SharpAssembler.x64
         /// <param name="destination">The destination register</param>
         /// <param name="sourceMemoryRegister">The source memory register</param>
         /// <param name="offset">The offset</param>
+        /// <param name="is32Bits">Indicates if the data is 32-bits</param>
         public static void MoveMemoryRegisterWithIntOffsetToRegister(
             IList<byte> codeGenerator,
             Register destination,
-            ExtendedRegister sourceMemoryRegister, int offset)
+            ExtendedRegister sourceMemoryRegister,
+            int offset,
+            bool is32Bits = false)
         {
-            codeGenerator.Add(0x49);
+            if (!is32Bits)
+            {
+                codeGenerator.Add(0x49);
+            }
+            else
+            {
+                codeGenerator.Add(0x41);
+            }
+
             codeGenerator.Add(0x8b);
             codeGenerator.Add((byte)(0x80 | (byte)sourceMemoryRegister | (byte)((byte)destination << 3)));
 
@@ -617,6 +704,59 @@ namespace SharpAssembler.x64
             }
         }
 
+        /// <summary>
+        /// Moves the content from a memory where the address is a register + int offset to a register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="sourceMemoryRegister">The source memory register</param>
+        /// <param name="offset">The offset</param>
+        public static void MoveMemoryRegisterWithIntOffsetToRegister(
+            IList<byte> codeGenerator,
+            Register8Bits destination,
+            Register sourceMemoryRegister,
+            int offset)
+        {
+            codeGenerator.Add(0x8a);
+
+            if (sourceMemoryRegister != Register.SP)
+            {
+                codeGenerator.Add((byte)(0x80 | (byte)sourceMemoryRegister | ((byte)destination << 3)));
+            }
+            else
+            {
+                codeGenerator.Add((byte)(0x84 | ((byte)destination << 3)));
+                codeGenerator.Add(0x24);
+            }
+
+            foreach (var component in BitConverter.GetBytes(offset))
+            {
+                codeGenerator.Add(component);
+            }
+        }
+
+        /// <summary>
+        /// Moves the content from a memory where the address is a register + int offset to a register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="sourceMemoryRegister">The source memory register</param>
+        /// <param name="offset">The offset</param>
+        public static void MoveMemoryRegisterWithIntOffsetToRegister(
+            IList<byte> codeGenerator,
+            Register8Bits destination,
+            ExtendedRegister sourceMemoryRegister,
+            int offset)
+        {
+            codeGenerator.Add(0x41);
+            codeGenerator.Add(0x8a);
+            codeGenerator.Add((byte)(0x80 | (byte)sourceMemoryRegister | ((byte)destination << 3)));
+
+            foreach (var component in BitConverter.GetBytes(offset))
+            {
+                codeGenerator.Add(component);
+            }
+        }
 
         /// <summary>
         /// Moves the content from a memory where the address is a register + int offset to a register
@@ -2046,6 +2186,117 @@ namespace SharpAssembler.x64
             codeGenerator.Add((byte)(0x80 | (byte)sourceMemoryRegister | (byte)destination << 3));
 
             foreach (var component in BitConverter.GetBytes(offset))
+            {
+                codeGenerator.Add(component);
+            }
+        }
+
+        /// <summary>
+        /// Multiplies the given int to the given register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destinationRegister">The destination register</param>
+        /// <param name="sourceValue">The value</param>
+        /// <param name="is32bits">Indicates if the operation is 32-bits</param>
+        public static void MultiplyConstantToRegister(IList<byte> codeGenerator, Register destinationRegister, int sourceValue, bool is32bits = false)
+        {
+            if (AssemblerHelpers.IsValidByteValue(sourceValue))
+            {
+                MultiplyByteToRegister(codeGenerator, destinationRegister, (byte)sourceValue, is32bits);
+            }
+            else
+            {
+                MultiplyIntToRegister(codeGenerator, destinationRegister, sourceValue, is32bits);
+            }
+        }
+
+        /// <summary>
+        /// Multiplies the given int to the given register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destinationRegister">The destination register</param>
+        /// <param name="sourceValue">The value</param>
+        public static void MultiplyConstantToRegister(IList<byte> codeGenerator, ExtendedRegister destinationRegister, int sourceValue)
+        {
+            if (AssemblerHelpers.IsValidByteValue(sourceValue))
+            {
+                MultiplyByteToRegister(codeGenerator, destinationRegister, (byte)sourceValue);
+            }
+            else
+            {
+                MultiplyIntToRegister(codeGenerator, destinationRegister, sourceValue);
+            }
+        }
+
+        /// <summary>
+        /// Multiplies the given int to the given register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destinationRegister">The destination register</param>
+        /// <param name="sourceValue">The value</param>
+        /// <param name="is32bits">Indicates if the operation is 32-bits</param>
+        public static void MultiplyByteToRegister(IList<byte> codeGenerator, Register destinationRegister, byte sourceValue, bool is32bits = false)
+        {
+            if (!is32bits)
+            {
+                codeGenerator.Add(0x48);
+            }
+
+            codeGenerator.Add(0x6b);
+            codeGenerator.Add((byte)(0xc0 | (byte)destinationRegister | ((byte)destinationRegister << 3)));
+            codeGenerator.Add(sourceValue);
+        }
+
+        /// <summary>
+        /// Multiplies the given int to the given register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destinationRegister">The destination register</param>
+        /// <param name="sourceValue">The value</param>
+        public static void MultiplyByteToRegister(IList<byte> codeGenerator, ExtendedRegister destinationRegister, byte sourceValue)
+        {
+            codeGenerator.Add(0x4d);
+            codeGenerator.Add(0x6b);
+            codeGenerator.Add((byte)(0xc0 | (byte)destinationRegister | ((byte)destinationRegister << 3)));
+            codeGenerator.Add(sourceValue);
+        }
+
+        /// <summary>
+        /// Multiplies the given int to the given register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destinationRegister">The destination register</param>
+        /// <param name="sourceValue">The value</param>
+        /// <param name="is32bits">Indicates if the operation is 32-bits</param>
+        public static void MultiplyIntToRegister(IList<byte> codeGenerator, Register destinationRegister, int sourceValue, bool is32bits = false)
+        {
+            if (!is32bits)
+            {
+                codeGenerator.Add(0x48);
+            }
+
+            codeGenerator.Add(0x69);
+            codeGenerator.Add((byte)(0xc0 | (byte)destinationRegister | ((byte)destinationRegister << 3)));
+
+            foreach (var component in BitConverter.GetBytes(sourceValue))
+            {
+                codeGenerator.Add(component);
+            }
+        }
+
+        /// <summary>
+        /// Multiplies the given int to the given register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destinationRegister">The destination register</param>
+        /// <param name="sourceValue">The value</param>
+        public static void MultiplyIntToRegister(IList<byte> codeGenerator, ExtendedRegister destinationRegister, int sourceValue)
+        {
+            codeGenerator.Add(0x4d);
+            codeGenerator.Add(0x69);
+            codeGenerator.Add((byte)(0xc0 | (byte)destinationRegister | ((byte)destinationRegister << 3)));
+
+            foreach (var component in BitConverter.GetBytes(sourceValue))
             {
                 codeGenerator.Add(component);
             }
