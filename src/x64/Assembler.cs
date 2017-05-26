@@ -116,6 +116,11 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
+        /// Returns the generated code
+        /// </summary>
+        public IList<byte> GeneratedCode => this.generatedCode;
+
+        /// <summary>
         /// The size of a register
         /// </summary>
         public const int RegisterSize = RawAssembler.RegisterSize;
@@ -975,7 +980,73 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
-        /// XOR's the second register to the first
+        /// Applies bitwise AND between the given registers
+        /// </summary>
+        /// <param name="destination">The destination</param>
+        /// <param name="source">The source</param>
+        /// <param name="is32Bits">Indicates if the operation is 32-bits</param>
+        public void And(IntRegister destination, IntRegister source, bool is32Bits = false)
+        {
+            GenerateTwoRegistersInstruction(
+                generatedCode,
+                destination,
+                source,
+                (gen, x, y) => RawAssembler.AndRegisterToRegister(gen, x, y, is32Bits),
+                RawAssembler.AndRegisterToRegister,
+                RawAssembler.AndRegisterToRegister,
+                RawAssembler.AndRegisterToRegister);
+        }
+
+        /// <summary>
+        /// Applies bitwise AND between the given register and constant
+        /// </summary>
+        /// <param name="destination">The destination</param>
+        /// <param name="value">The value</param>
+        /// <param name="is32Bits">Indicates if the operation is 32-bits</param>
+        public void And(IntRegister destination, int value, bool is32Bits = false)
+        {
+            GenerateOneRegisterWithValueInstruction<int>(
+                generatedCode,
+                destination,
+                value,
+                (gen, x, y) => RawAssembler.AndIntToRegister(gen, x, y, is32Bits),
+                (gen, x, y) => RawAssembler.AndIntToRegister(gen, x, y));
+        }
+
+        /// <summary>
+        /// Applies bitwise OR between the given registers
+        /// </summary>
+        /// <param name="destination">The destination</param>
+        /// <param name="source">The source</param>
+        /// <param name="is32Bits">Indicates if the operation is 32-bits</param>
+        public void Or(IntRegister destination, IntRegister source, bool is32Bits = false)
+        {
+            GenerateTwoRegistersInstruction(
+                generatedCode,
+                destination,
+                source,
+                (gen, x, y) => RawAssembler.OrRegisterToRegister(gen, x, y, is32Bits),
+                RawAssembler.OrRegisterToRegister,
+                RawAssembler.OrRegisterToRegister,
+                RawAssembler.OrRegisterToRegister);
+        }
+
+        /// <summary>
+        /// Applies bitwise NOT to the given register
+        /// </summary>
+        /// <param name="register">The register</param>
+        /// <param name="is32Bits">Indicates if the operation is 32-bits</param>
+        public void Not(IntRegister register, bool is32Bits = false)
+        {
+            GenerateOneRegisterInstruction(
+                generatedCode,
+                register,
+                (gen, x) => RawAssembler.NotRegister(gen, x),
+                (gen, x) => RawAssembler.NotRegister(gen, x));
+        }
+
+        /// <summary>
+        /// Applies bitwise XOR between the given registers
         /// </summary>
         /// <param name="destination">The destination</param>
         /// <param name="source">The source</param>

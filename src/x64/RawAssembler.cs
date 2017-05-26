@@ -2494,13 +2494,100 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
+        /// AND's the second register to the first
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="source">The source register</param>
+        public static void AndRegisterToRegister(IList<byte> codeGenerator, ExtendedRegister destination, ExtendedRegister source)
+        {
+            codeGenerator.Add(0x4d);
+            codeGenerator.Add(0x21);
+            codeGenerator.Add((byte)(0xc0 | (byte)destination | ((byte)source << 3)));
+        }
+
+        /// <summary>
+        /// AND's the second register to the first
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="source">The source register</param>
+        public static void AndRegisterToRegister(IList<byte> codeGenerator, Register destination, ExtendedRegister source)
+        {
+            codeGenerator.Add(0x49);
+            codeGenerator.Add(0x21);
+            codeGenerator.Add((byte)(0xc0 | (byte)destination | ((byte)source << 3)));
+        }
+
+        /// <summary>
+        /// AND's the second register to the first
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="source">The source register</param>
+        public static void AndRegisterToRegister(IList<byte> codeGenerator, ExtendedRegister destination, Register source)
+        {
+            codeGenerator.Add(0x4c);
+            codeGenerator.Add(0x21);
+            codeGenerator.Add((byte)(0xc0 | (byte)destination | ((byte)source << 3)));
+        }
+
+        /// <summary>
+        /// AND's the given 32-bit int constant to the first register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="value">The value</param>
+        /// <param name="is32bits">Indicates if a 32-bits register</param>
+        public static void AndIntToRegister(IList<byte> codeGenerator, Register destination, int value, bool is32bits = false)
+        {
+            if (!is32bits)
+            {
+                codeGenerator.Add(0x48);
+            }
+
+            if (destination == Register.AX)
+            {
+                codeGenerator.Add(0x25);
+            }
+            else
+            {
+                codeGenerator.Add(0x81);
+                codeGenerator.Add((byte)(0xe0 | (byte)destination));
+            }
+
+            foreach (var component in BitConverter.GetBytes(value))
+            {
+                codeGenerator.Add(component);
+            }
+        }
+
+        /// <summary>
+        /// AND's the given 32-bit int constant to the first register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="value">The value</param>
+        public static void AndIntToRegister(IList<byte> codeGenerator, ExtendedRegister destination, int value)
+        {
+            codeGenerator.Add(0x49);
+            codeGenerator.Add(0x81);
+            codeGenerator.Add((byte)(0xe0 | (byte)destination));
+
+            foreach (var component in BitConverter.GetBytes(value))
+            {
+                codeGenerator.Add(component);
+            }
+        }
+
+        /// <summary>
         /// OR's the second register to the first
         /// </summary>
         /// <param name="codeGenerator">The code generator</param>
-        /// <param name="dest"></param>
-        /// <param name="src"></param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="source">The source register</param>
         /// <param name="is32bits">Indicates if a 32-bits register</param>
-        public static void OrRegisterToRegister(IList<byte> codeGenerator, Register dest, Register src, bool is32bits = false)
+        public static void OrRegisterToRegister(IList<byte> codeGenerator, Register destination, Register source, bool is32bits = false)
         {
             if (!is32bits)
             {
@@ -2508,7 +2595,46 @@ namespace SharpAssembler.x64
             }
 
             codeGenerator.Add(0x09);
-            codeGenerator.Add((byte)(0xc0 | (byte)dest | (byte)((byte)src << 3)));
+            codeGenerator.Add((byte)(0xc0 | (byte)destination | (byte)((byte)source << 3)));
+        }
+
+        /// <summary>
+        /// OR's the second register to the first
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="source">The source register</param>
+        public static void OrRegisterToRegister(IList<byte> codeGenerator, ExtendedRegister destination, ExtendedRegister source)
+        {
+            codeGenerator.Add(0x4d);
+            codeGenerator.Add(0x09);
+            codeGenerator.Add((byte)(0xc0 | (byte)destination | ((byte)source << 3)));
+        }
+
+        /// <summary>
+        /// OR's the second register to the first
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="source">The source register</param>
+        public static void OrRegisterToRegister(IList<byte> codeGenerator, Register destination, ExtendedRegister source)
+        {
+            codeGenerator.Add(0x49);
+            codeGenerator.Add(0x09);
+            codeGenerator.Add((byte)(0xc0 | (byte)destination | ((byte)source << 3)));
+        }
+
+        /// <summary>
+        /// OR's the second register to the first
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="destination">The destination register</param>
+        /// <param name="source">The source register</param>
+        public static void OrRegisterToRegister(IList<byte> codeGenerator, ExtendedRegister destination, Register source)
+        {
+            codeGenerator.Add(0x4c);
+            codeGenerator.Add(0x09);
+            codeGenerator.Add((byte)(0xc0 | (byte)destination | ((byte)source << 3)));
         }
 
         /// <summary>
@@ -2572,9 +2698,9 @@ namespace SharpAssembler.x64
         /// NOT's the register
         /// </summary>
         /// <param name="codeGenerator">The code generator</param>
-        /// <param name="reg"></param>
+        /// <param name="register"></param>
         /// <param name="is32bits">Indicates if a 32-bits register</param>
-        public static void NotRegister(IList<byte> codeGenerator, Register reg, bool is32bits = false)
+        public static void NotRegister(IList<byte> codeGenerator, Register register, bool is32bits = false)
         {
             if (!is32bits)
             {
@@ -2582,11 +2708,23 @@ namespace SharpAssembler.x64
             }
 
             codeGenerator.Add(0xf7);
-            codeGenerator.Add((byte)(0xd0 | (byte)reg));
+            codeGenerator.Add((byte)(0xd0 | (byte)register));
         }
 
         /// <summary>
-        /// Compares the two registers
+        /// NOT's the register
+        /// </summary>
+        /// <param name="codeGenerator">The code generator</param>
+        /// <param name="register"></param>
+        public static void NotRegister(IList<byte> codeGenerator, ExtendedRegister register)
+        {
+            codeGenerator.Add(0x49);
+            codeGenerator.Add(0xf7);
+            codeGenerator.Add((byte)(0xd0 | (byte)register));
+        }
+
+        /// <summary>
+        /// Compares the two Register
         /// </summary>
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="register1">The first register</param>
@@ -2599,7 +2737,7 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
-        /// Compares the two registers
+        /// Compares the two Register
         /// </summary>
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="register1">The first register</param>
@@ -2612,7 +2750,7 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
-        /// Compares the two registers
+        /// Compares the two Register
         /// </summary>
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="register1">The first register</param>
@@ -2625,7 +2763,7 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
-        /// Compares the two registers
+        /// Compares the two Register
         /// </summary>
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="register1">The first register</param>
@@ -2842,7 +2980,7 @@ namespace SharpAssembler.x64
         }
 
         /// <summary>
-        /// Compares the two registers
+        /// Compares the two Register
         /// </summary>
         /// <param name="codeGenerator">The code generator</param>
         /// <param name="register1">The first register</param>
